@@ -166,49 +166,154 @@ Dockerfile: 이미지를 자동으로 빌드하기 위한 스크립트 파일입
 
 ## 2-2. Docker 구성 요소
 
-1. Docker Daemon (dockerd)
-역할: Docker Daemon은 Docker 클라이언트의 요청을 처리하고 컨테이너의 생명 주기를 관리합니다. 이미지 빌드, 실행, 네트워킹 및 볼륨 관리를 포함한 모든 Docker 작업을 수행합니다.
-동작 방식: 백그라운드에서 실행되며 클라이언트 명령을 수신 대기합니다.
+### 2-2-1. Docker Daemon (dockerd)
 
-2. Docker Client (docker)
-역할: 사용자가 Docker를 조작할 수 있는 명령줄 도구입니다.
-동작 방식: 사용자가 입력한 명령을 Docker Daemon에 전달하여 작업을 수행합니다.
+- 역할: Docker Daemon은 Docker 클라이언트의 요청을 처리하고 컨테이너의 생명 주기를 관리합니다. 이미지 빌드, 실행, 네트워킹 및 - 볼륨 관리를 포함한 모든 Docker 작업을 수행합니다.
+- 동작 방식: 백그라운드에서 실행되며 클라이언트 명령을 수신 대기합니다.
 
-3. Docker Image
+<br><br>
+
+### 2-2-2. Docker Client (docker)
+
+- 역할: 사용자가 Docker를 조작할 수 있는 명령줄 도구입니다.
+- 동작 방식: 사용자가 입력한 명령을 Docker Daemon에 전달하여 작업을 수행합니다.
+
+<br><br>
+
+### 2-2-3. Docker Image
+
 역할: 컨테이너를 생성하기 위한 읽기 전용 템플릿입니다.
 구성: 애플리케이션과 그 애플리케이션이 실행되기 위해 필요한 모든 파일과 메타데이터를 포함합니다.
 동작 방식: Dockerfile을 사용하여 이미지를 빌드하고, 레지스트리에서 이미지를 가져와 사용할 수 있습니다.
 
-4. Docker Container
+<br><br>
+
+### 2-2-4. Docker Container
+
 역할: 이미지로부터 생성된 실행 가능한 인스턴스입니다.
 동작 방식: 격리된 환경에서 애플리케이션을 실행합니다. 컨테이너는 이미지의 불변성을 유지하며 독립적으로 실행됩니다.
 
-5. Docker Registry (Docker Hub)
+<br><br>
+
+### 2-2-5. Docker Registry (Docker Hub)
+
 역할: Docker 이미지를 저장하고 배포하는 중앙 저장소입니다.
 구성: 공용 레지스트리 (예: Docker Hub)와 사설 레지스트리를 사용할 수 있습니다.
 동작 방식: 이미지를 푸시(push)하여 저장하고, 풀(pull)하여 가져와 사용할 수 있습니다.
 
-6. Dockerfile
+<br><br>
+
+### 2-2-6. Dockerfile
+
 역할: Docker 이미지를 빌드하기 위한 스크립트 파일입니다.
 구성: 각 단계에서 실행할 명령을 정의하며, 텍스트 파일 형식으로 작성됩니다.
 동작 방식: Dockerfile을 기반으로 Docker 이미지가 생성됩니다.
 
-7. Docker Compose
+<br><br>
+
+### 2-2-7. Docker Compose
+
 역할: 다중 컨테이너 애플리케이션을 정의하고 실행하기 위한 도구입니다.
 구성: docker-compose.yml 파일을 사용하여 서비스, 네트워크, 볼륨 등을 정의합니다.
 동작 방식: docker-compose up 명령으로 모든 서비스를 일괄 실행합니다.
 
-8. Docker Network
+<br><br>
+
+### 2-2-8. Docker Network
+
 역할: 컨테이너 간 통신을 설정하는 가상 네트워크입니다.
 구성: 브리지 네트워크, 호스트 네트워크, 오버레이 네트워크 등 다양한 네트워크 모드가 있습니다.
 동작 방식: 컨테이너가 서로 통신할 수 있도록 네트워크를 설정하고 관리합니다.
 
-9. Docker Volume
+<br><br>
+
+### 2-2-9. Docker Volume
+
 역할: 컨테이너와 호스트 시스템 간 데이터 공유를 위한 영구 스토리지입니다.
 구성: 컨테이너가 종료되거나 삭제되어도 데이터를 유지합니다.
 동작 방식: 볼륨을 마운트하여 데이터 공유 및 보존을 관리합니다.
 
-10. Docker Swarm
+<br><br>
+
+### 2-2-10. Docker Swarm
+
 역할: Docker의 네이티브 클러스터링 및 오케스트레이션 도구입니다.
 구성: 여러 Docker 엔진을 하나의 클러스터로 묶어 관리합니다.
 동작 방식: 서비스 배포, 스케일링, 로드 밸런싱을 포함한 클러스터 관리 기능을 제공합니다.
+
+<br><br><br>
+
+
+Dockerfile 작성 문법
+Dockerfile은 여러 가지 명령어를 사용하여 작성됩니다. 주요 명령어는 다음과 같습니다:
+
+FROM: 베이스 이미지를 지정합니다.
+RUN: 컨테이너 내에서 명령을 실행합니다.
+COPY 또는 ADD: 파일을 이미지에 복사합니다.
+WORKDIR: 작업 디렉토리를 설정합니다.
+CMD 또는 ENTRYPOINT: 컨테이너가 시작될 때 실행할 명령을 지정합니다.
+EXPOSE: 컨테이너에서 사용할 포트를 지정합니다.
+ENV: 환경 변수를 설정합니다.
+예시: Nginx와 커스텀 HTML 파일을 포함한 Dockerfile
+아래는 Nginx와 커스텀 HTML 파일을 포함한 이미지를 생성하기 위한 Dockerfile 예시입니다:
+
+1. 프로젝트 디렉토리 구조
+
+css
+코드 복사
+project/
+│
+├── Dockerfile
+└── html/
+    └── index.html
+
+
+1. index.html 파일 내용
+html
+코드 복사
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Nginx!</title>
+</head>
+<body>
+    <h1>Success! The Nginx server is working!</h1>
+</body>
+</html>
+
+
+3. Dockerfile 작성
+dockerfile
+코드 복사
+# 베이스 이미지로 nginx를 사용
+FROM nginx:latest
+
+# 환경 변수를 설정 (옵션)
+ENV NGINX_VERSION 1.19.3
+
+# 호스트 시스템의 html 디렉토리 내용을 컨테이너의 /usr/share/nginx/html 디렉토리로 복사
+COPY html/ /usr/share/nginx/html/
+
+# Nginx 컨테이너가 80번 포트를 노출하도록 설정
+EXPOSE 80
+
+# Nginx를 실행하는 기본 명령 설정
+CMD ["nginx", "-g", "daemon off;"]
+
+4. Docker 이미지 빌드
+프로젝트 디렉토리로 이동하여 다음 명령을 실행합니다:
+
+bash
+코드 복사
+docker build -t mynginx .
+
+5. Docker 컨테이너 실행
+bash
+코드 복사
+docker run -d -p 80:80 mynginx
+Dockerfile 설명
+FROM nginx:latest: 최신 버전의 Nginx 이미지를 베이스 이미지로 사용합니다.
+ENV NGINX_VERSION 1.19.3: 환경 변수를 설정합니다. 이 예제에서는 Nginx 버전을 설정했습니다.
+COPY html/ /usr/share/nginx/html/: 호스트 시스템의 html 디렉토리 내용을 컨테이너의 /usr/share/nginx/html/ 디렉토리에 복사합니다.
+EXPOSE 80: 컨테이너가 80번 포트를 노출하도록 설정합니다.
+CMD ["nginx", "-g", "daemon off;"]: Nginx를 포그라운드 모드로 실행하도록 설정합니다
