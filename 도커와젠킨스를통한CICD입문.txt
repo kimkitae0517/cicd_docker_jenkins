@@ -83,7 +83,7 @@ dnf repolist
 [root@localhost 01_docker]# sh install_docker.sh			# docker 설치
 [root@localhost 01_docker]# docker info				# docker 확인
 
-[root@localhost 01_docker]# docker run --rm quay.io/uvelyster/nginx	# 특정 깃허브 레포시터리에 있는 이미지를 가져와 곧 바로 실행
+[root@localhost 01_docker]# docker run --rm quay.io/uvelyster/nginx	# 특정 깃허브 nginx 레포시터리에 있는 이미지를 가져와 nginx 곧 바로 실행
 
 ------- 참고사항 -----------
 Ctrl+C  :  프로세스종료
@@ -92,16 +92,53 @@ docker pull : 로컬로 이미지 다운로드
 docker create : 도커 컨테이너 생성
 docker start : 컨테이너 실행
  
+docker ps : 도커 상태 목록
+ex) [root@localhost 01_docker]# docker ps
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS          PORTS     NAMES
+ac293a100198   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   18 minutes ago   Up 18 minutes   80/tcp    awesome_goldwasser
+
+
 docker run : 컨테이너 바로 실행
 docker run --rm -d quay.io/uvelyster/nginx 		# 백그라운드로 동작 : -d 옵션
 -d : detach 분리 모드
 -i : interactive 모드
 -t : tty 사용
 ex) docker run -it IMAGE bash			# bash 프로세스로 interactive 모드로 tty 사용
+--name : 지정하지 않으면, 임의의 이름으로 지정되지만, 이 옵션을 사용하면, 서버 프로세스의 이름을 지정할 수 있음
+ex) docker run --name testweb -d quay.io/uvelyster/nginx
+-e : 환경변수 설정
+ex) docker run -e PORT=1234			# 포트번호 변경
+
+docker stop : 컨테이너 중지
+ex) docker stop 6	# 6번 프로세스 정지
+
+docker rm : 컨테이너 삭제
+ex) docker rm 6	# 6번 프로세스 제거
+ex) docker rm -f 6	# 6번 프로세스 강제 제거
+
+docker rmi : 이미지 삭제
+
+
+1. 컨테이너 중지:
+docker stop ac293a100198
+
+2. 컨테이너 제거:
+docker rm ac293a100198
+
+3. 컨테이너 강제 제거(중지 및 제거)
+docker rm -f ac293a100198
+
+
+docker run IMAGE
+docker exec CONTAINER CMD
+
+docker network create demonet --subnet 172.20.0.0/24
 ---------------------------------
 
-[root@localhost 01_docker]# docker run --rm -d quay.io/uvelyster/nginx
+[root@localhost 01_docker]# docker run --rm -d quay.io/uvelyster/nginx	# 아래 ac293a1001983d61c81e45ab44f681a54a1fb130b8c5136fe18ba7084cbd3035 는 임의의 서버 프로세스의 이름임
 ac293a1001983d61c81e45ab44f681a54a1fb130b8c5136fe18ba7084cbd3035
+[root@localhost 01_docker]# docker ps
+
 [root@localhost 01_docker]# docker run --rm -it quay.io/uvelyster/nginx bash
 root@05ef02a73603:/# 
 
@@ -132,12 +169,226 @@ Commercial support is available at
 
 root@05ef02a73603:/# exit
 exit
+[root@localhost 01_docker]# 
+
+
+
+
+
+Network / Storage / Image build
+
+
+Network
+
+[root@localhost 01_docker]# ip a			# 네트워크 내역 보기
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen                                              1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group de                                             fault qlen 1000
+    link/ether 08:00:27:61:89:16 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute enp0s3
+       valid_lft 79542sec preferred_lft 79542sec
+    inet6 fe80::a00:27ff:fe61:8916/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group de                                             fault qlen 1000
+    link/ether 08:00:27:5e:0f:10 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.0.200/24 brd 172.16.0.255 scope global noprefixroute enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe5e:f10/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group de                                             fault
+    link/ether 02:42:76:4b:8d:89 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:76ff:fe4b:8d89/64 scope link
+       valid_lft forever preferred_lft forever
+8: veth04c25da@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master do                                             cker0 state UP group default
+    link/ether b2:5f:9f:67:ba:40 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b05f:9fff:fe67:ba40/64 scope link
+       valid_lft forever preferred_lft forever
+[root@localhost 01_docker]#
+
+위 명령에서 4번 내역은
+172.17.0.1/16
+
+8.8.0.0
+
+Broad Cast : 172.17.0.0 ~ 172.17.255.255
+
+
+[root@localhost 01_docker]# docker network ls		# docker 에서 사용하는 네트워크 목록
+NETWORK ID     NAME      DRIVER    SCOPE
+e3b856841efa   bridge    bridge    local
+4b7c5e1deb1c   host      host      local
+79a6fce21c3f   none      null      local
+
+
+[root@localhost 01_docker]# curl 172.17.0.2		# 172.17.0.2 의 ip주소를 갖는 nginx 서버에 요청
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+[root@localhost 01_docker]#
+
+
+[root@localhost 01_docker]# docker run -d -p 1234:80 quay.io/uvelyster/nginx		# -p 옵션은 특정 포트를 할당하는 옵션
+b488a3d615668c5be061f0a2dd5ed45799e7c153386d70740dc47406c0b213fc
+
+웹브라우저에서 URL 입력줄에 http://172.16.0.200:1234/   입력하면, nginx가 index.html 을 응답함.
+
+
+
+[root@localhost 01_docker]# docker run -d -P quay.io/uvelyster/nginx			# -P 옵션은 사용가능한 포트를 자동으로 할당하는 옵션
+fbd814759b806de1f8b21628e7fe4a2a2ff759ff65dc677e91f7734f38d69ed0
+[root@localhost 01_docker]# docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED             STATUS             PORTS                                     NAMES
+fbd814759b80   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   5 seconds ago       Up 4 seconds       0.0.0.0:32768->80/tcp, :::32768->80/tcp   serene_kilby
+b488a3d61566   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   8 minutes ago       Up 8 minutes       0.0.0.0:1234->80/tcp, :::1234->80/tcp     gallant_dewdney
+ac293a100198   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   About an hour ago   Up About an hour   80/tcp                                    awesome_goldwasser
+
+웹브라우저에서 URL 입력줄에 http://172.16.0.200:32768/   입력하면, nginx가 index.html 을 응답함.
+
+
+
+
+
+[root@localhost 01_docker]# docker run -d -v demovol:/usr/share/nginx/html -p 2222:80 quay.io/uvelyster/nginx
+a0e08358985f5eb0206d4dbbf8c7cefaf22df875e4137ffaad0612edb5221207
+
+[root@localhost 01_docker]# docker volume ls
+DRIVER    VOLUME NAME
+local     demovol
+
+[root@localhost 01_docker]# docker volume inspect demovol
+[
+    {
+        "CreatedAt": "2024-06-29T17:05:49+09:00",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/demovol/_data",
+        "Name": "demovol",
+        "Options": null,
+        "Scope": "local"
+    }
+]
 [root@localhost 01_docker]#
 
 
 
+[root@localhost 01_docker]# vi /usr/share/nginx/html/index.html
+[root@localhost 01_docker]# vi /usr/share/nginx/index.html
+[root@localhost 01_docker]# cd /var/lib/docker/volumes/demovol/_data
+[root@localhost _data]# ls
+50x.html  index.html
+
+[root@localhost _data]# vi index.html
+
+[root@localhost _data]# docker run -d -v demovol:/usr/share/nginx/html -p 3333:80 quay.io/uvelyster/nginx
+
+[root@localhost _data]# docker run -d -v demovol:/usr/share/nginx/html -p 4444:80 quay.io/uvelyster/nginx
+bbfe0cb25e0aad410f816c4ab788bf31cea1d7ffa95e5534f07de7d58291c1d7
+
+[root@localhost _data]# docker ps -a
+CONTAINER ID   IMAGE                     COMMAND                  CREATED              STATUS              PORTS                                     NAMES
+bbfe0cb25e0a   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   14 seconds ago       Up 14 seconds       0.0.0.0:4444->80/tcp, :::4444->80/tcp     priceless_greider
+3979c2099fe1   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:3333->80/tcp, :::3333->80/tcp     xenodochial_chandrasekhar
+a0e08358985f   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   8 minutes ago        Up 8 minutes        0.0.0.0:2222->80/tcp, :::2222->80/tcp     crazy_shockley
+fbd814759b80   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   39 minutes ago       Up 39 minutes       0.0.0.0:32768->80/tcp, :::32768->80/tcp   serene_kilby
+b488a3d61566   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   48 minutes ago       Up 48 minutes       0.0.0.0:1234->80/tcp, :::1234->80/tcp     gallant_dewdney
+ac293a100198   quay.io/uvelyster/nginx   "/docker-entrypoint.…"   2 hours ago          Up 2 hours          80/tcp                                    awesome_goldwasser
+
+[root@localhost _data]# docker rm -f bbfe0cb25e0aad410f816c4ab788bf31cea1d7ffa95e5534f07de7d58291c1d7
+bbfe0cb25e0aad410f816c4ab788bf31cea1d7ffa95e5534f07de7d58291c1d7
+
+[root@localhost _data]# docker volume prune -a
+WARNING! This will remove all local volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+[root@localhost _data]#
 
 
+
+
+bindmount / volume
+
+
+
+
+create image
+	- 수동 빌드 : docker run + docker commit
+	- 자동 빌드 : docker build - 스크립트 파일 필요(Dockerfile)
+
+
+자동 빌드를 위한 Dockerfile 작성 문법
+
+# : 각주
+
+Instruction Argument
+
+FROM: 베이스 이미지를 지정합니다.
+RUN: 컨테이너 내에서 명령을 실행합니다.
+COPY 또는 ADD: 파일을 이미지에 복사합니다.
+WORKDIR: 작업 디렉토리를 설정합니다.
+CMD 또는 ENTRYPOINT: 컨테이너가 시작될 때 실행할 명령을 지정합니다.
+EXPOSE: 컨테이너에서 사용할 포트를 지정합니다.
+ENV: 환경 변수를 설정합니다.
+VOLUME: 마운트 포인트
+
+
+자동 빌드를 위한 Dockerfile 작성 예시
+
+# 베이스 이미지로 nginx를 사용
+FROM nginx:latest
+
+# 환경 변수를 설정 (옵션)
+ENV NGINX_VERSION 1.19.3
+
+# 호스트 시스템의 html 디렉토리 내용을 컨테이너의 /usr/share/nginx/html 디렉토리로 복사
+COPY html/ /usr/share/nginx/html/
+
+# Nginx 컨테이너가 80번 포트를 노출하도록 설정
+EXPOSE 80
+
+# Nginx를 실행하는 기본 명령 설정
+CMD ["nginx", "-g", "daemon off;"]
+
+[root@localhost share]# cd ~
+
+[root@localhost ~]# cd jenkins
+
+[root@localhost jenkins]# ls
+01_docker  02_gitlab  03_jenkins  04_harbor  05_owasp  06_sonarqube  07_artifactory  08_kubernetes  nodejs
+
+[root@localhost jenkins]# cd nodejs
+
+[root@localhost nodejs]# docker build . -t myimage
+[+] Building 19.1s (13/13) FINISHED            
+
+[root@localhost nodejs]# docker images
+REPOSITORY                TAG       IMAGE ID       CREATED          SIZE
+myimage                   latest    2f197b418a9c   58 seconds ago   114MB
 
 
 
