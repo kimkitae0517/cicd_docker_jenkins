@@ -1,0 +1,156 @@
+클라우드컴퓨팅 - 한국휴렛팩커드 교육센터(HPE)
+도커와 젠킨스를 통한 CI/CD 입문
+
+오승욱
+uvely@naver.com
+
+CD -> Continous Delivery
+    -> Continous Deployment	
+
+SAST -> Static Application Security Test
+DAST -> 
+
+
+mobaxterm
+
+
+이름 : rocky
+종류 : Linux
+버전 : Red Hat 64-bit
+메모리 : 16384
+디스크 : 동적할당, vdi, 40GB
+
+
+vCPU : 1(default) -> 4
+Network : NAT (default) + host-only
+
+프로세서 (상단 탭)
+설정 -> 네트워크 (좌패널) -> 어뎁터 (상단 탭) -> 사용하기 체크 -> 호스트 전용 어댑터 선택
+
+
+Allow root ssh login with password
+
+172.16.0.200/24
+255.255.255.0
+
+Vm 관리자-> 파일 -> 호스트 네트워크 관리자
+
+192.168.56.1 -> 172.16.0.1
+
+192.168.56.101
+
+
+Rocky Linux를 기동한 후 root로 로그인 하고, 아래 명령을 실행
+
+ip a
+nmcli con mod enp0s8 \
+ipv4.method manual \
+ipv4.address 172.16.0.200/24
+poweroff
+
+head로 실행(Background 로 실행)
+
+
+
+mobaXterm에서  해당 세션을 더블클릭한 후 가상 시스템
+
+[root@localhost ~]# dnf install -y git 			# git 설치
+[root@localhost ~]# git clone https://github.com/uvelys/jenkins.git		# git repository 복제하기
+[root@localhost ~]# cd jenkins
+[root@localhost jenkins]# ls
+[root@localhost jenkins]# cd 01_docker/
+[root@localhost 01_docker]# cat install_docker.sh
+
+--- install_docker.sh 의 내용 명령 ----
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+sudo curl -o /etc/yum.repos.d/docker-ce.repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install -y docker-ce
+
+# docker 1.13 이후에는 docker-ce와 docker-ee로 분리가 됨  ce(custom edition), ee(enterprise edition) 임
+# 그래서 반드시 docker 말고, docker-ce 를 설치해야함
+
+sudo systemctl start docker
+sudo systemctl enable docker
+---------------------------------------
+
+---- 참고 명령 ----
+cd /etc/yum.repos.d/
+dnf repolist
+-------------------
+
+
+[root@localhost 01_docker]# sh install_docker.sh			# docker 설치
+[root@localhost 01_docker]# docker info				# docker 확인
+
+[root@localhost 01_docker]# docker run --rm quay.io/uvelyster/nginx	# 특정 깃허브 레포시터리에 있는 이미지를 가져와 곧 바로 실행
+
+------- 참고사항 -----------
+Ctrl+C  :  프로세스종료
+
+docker pull : 로컬로 이미지 다운로드
+docker create : 도커 컨테이너 생성
+docker start : 컨테이너 실행
+ 
+docker run : 컨테이너 바로 실행
+docker run --rm -d quay.io/uvelyster/nginx 		# 백그라운드로 동작 : -d 옵션
+-d : detach 분리 모드
+-i : interactive 모드
+-t : tty 사용
+ex) docker run -it IMAGE bash			# bash 프로세스로 interactive 모드로 tty 사용
+---------------------------------
+
+[root@localhost 01_docker]# docker run --rm -d quay.io/uvelyster/nginx
+ac293a1001983d61c81e45ab44f681a54a1fb130b8c5136fe18ba7084cbd3035
+[root@localhost 01_docker]# docker run --rm -it quay.io/uvelyster/nginx bash
+root@05ef02a73603:/# 
+
+root@05ef02a73603:/# cat /usr/share/nginx/html/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+root@05ef02a73603:/# exit
+exit
+[root@localhost 01_docker]#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
