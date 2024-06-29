@@ -12,6 +12,8 @@
 
 ![Virtual Box](./images/virtualbox004.png)
 
+[Virtual Box 다운로드 바로가기](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1)
+
 <br><br>
 
 ### 1-1-2. Virtual Box 설치
@@ -34,14 +36,134 @@
 
 ![Virtual Box](./images/virtualbox013.png)
 
+<br><br>
+
+### 1-1-3. Virtual Box 설정
+
+#### 1-1-3-1. Rocky Linux 설치 전 설정
+
+![Virtual Box](./images/virtualbox014.png)
+
+![Virtual Box](./images/virtualbox015.png)
+
+![Virtual Box](./images/virtualbox016.png)
+
+![Virtual Box](./images/virtualbox017.png)
+
+![Virtual Box](./images/virtualbox018.png)
+
+![Virtual Box](./images/virtualbox019.png)
+
+![Virtual Box](./images/virtualbox020.png)
+
+![Virtual Box](./images/virtualbox021.png)
+
+![Virtual Box](./images/virtualbox022.png)
+
+![Virtual Box](./images/virtualbox023.png)
+
+![Virtual Box](./images/virtualbox024.png)
+
+<br>
+
+#### 1-1-3-2. Rocky Linux 다운로드
+
+![Rocky Linux](./images/rockylinux01.png)
+
+![Rocky Linux](./images/rockylinux02.png)
+
+[Rocky Linux 다운로드 바로가기](https://rockylinux.org/download)
+
+<br>
+
+#### 1-1-3-3. Rocky Linux 이미지 지정 및 Vm 설정
+
+![Virtual Box](./images/virtualbox025.png)
+
+![Virtual Box](./images/virtualbox026.png)
+
+![Virtual Box](./images/virtualbox027.png)
+
+<br>
+
+#### 1-1-3-4. Rocky Linux 설치
+
+![Virtual Box](./images/virtualbox028.png)
+
+![Virtual Box](./images/virtualbox029.png)
+
+![Virtual Box](./images/virtualbox030.png)
+
+![Virtual Box](./images/virtualbox031.png)
+
+![Virtual Box](./images/virtualbox032.png)
+
+![Virtual Box](./images/virtualbox033.png)
+
+<br>
+
+#### 1-1-3-5. MobaXterm 연결을 위한 설정
+
+- Virtual Box의 Rocky Linux를 기동한 후 root로 로그인 하고, 아래 명령을 실행합니다.
+
+```sh
+ip a
+nmcli con mod enp0s8 \
+ipv4.method manual \
+ipv4.address 172.16.0.200/24
+poweroff
+```
+
+<br>
+
+![Virtual Box](./images/virtualbox034.png)
+
+![Virtual Box](./images/virtualbox035.png)
+
+![Virtual Box](./images/virtualbox036.png)
+
+![Virtual Box](./images/virtualbox038.png)
+
+- 헤드리스방식은 백그라운드 방식으로 화면에 나타나지 않고 계속 실행중이 될 수 있도록 합니다.
 
 <br><br><br>
 
-## 1-2. Rocky Linux 다운로드 및 설치
 
-<br><br><br>
+## 1-2. MobaXterm 다운로드 및 설치
 
-## 1-3. MobaXterm 다운로드 및 설치
+### 1-2-1. MobaXterm 다운로드
+
+![MobaXterm](./images/mobaxterm01.png)
+
+![MobaXterm](./images/mobaxterm02.png)
+
+[MobaXterm 다운로드 바로가기](https://mobaxterm.mobatek.net/download-home-edition.html)
+
+<br><br>
+
+### 1-2-2. MobaXterm 설치
+
+![MobaXterm](./images/mobaxterm03.png)
+
+![MobaXterm](./images/mobaxterm04.png)
+
+![MobaXterm](./images/mobaxterm05.png)
+
+![MobaXterm](./images/mobaxterm06.png)
+
+![MobaXterm](./images/mobaxterm07.png)
+
+<br><br>
+
+### 1-2-3. MobaXterm 설정 및 실행
+
+![MobaXterm](./images/mobaxterm08.png)
+
+![MobaXterm](./images/mobaxterm09.png)
+
+![MobaXterm](./images/mobaxterm10.png)
+
+![MobaXterm](./images/mobaxterm11.png)
 
 <br><br><br><br>
 
@@ -118,7 +240,7 @@
 Dockerfile과 Docker Compose를 사용하여 애플리케이션의 빌드, 배포, 확장을 자동화할 수 있습니다.
 CI/CD 파이프라인에 쉽게 통합할 수 있습니다.
 
-<br>
+<br><br>
 
 ### 2-1-3. Docker의 주요 기능
 
@@ -244,33 +366,37 @@ Dockerfile: 이미지를 자동으로 빌드하기 위한 스크립트 파일입
 <br><br><br>
 
 
-Dockerfile 작성 문법
+## 2-3. Dockerfile 작성 문법
+
 Dockerfile은 여러 가지 명령어를 사용하여 작성됩니다. 주요 명령어는 다음과 같습니다:
 
-FROM: 베이스 이미지를 지정합니다.
-RUN: 컨테이너 내에서 명령을 실행합니다.
-COPY 또는 ADD: 파일을 이미지에 복사합니다.
-WORKDIR: 작업 디렉토리를 설정합니다.
-CMD 또는 ENTRYPOINT: 컨테이너가 시작될 때 실행할 명령을 지정합니다.
-EXPOSE: 컨테이너에서 사용할 포트를 지정합니다.
-ENV: 환경 변수를 설정합니다.
+- FROM: 베이스 이미지를 지정합니다.
+- RUN: 컨테이너 내에서 명령을 실행합니다.
+- COPY 또는 ADD: 파일을 이미지에 복사합니다.
+- WORKDIR: 작업 디렉토리를 설정합니다.
+- CMD 또는 ENTRYPOINT: 컨테이너가 시작될 때 실행할 명령을 지정합니다.
+- EXPOSE: 컨테이너에서 사용할 포트를 지정합니다.
+- ENV: 환경 변수를 설정합니다.
+
 예시: Nginx와 커스텀 HTML 파일을 포함한 Dockerfile
+
 아래는 Nginx와 커스텀 HTML 파일을 포함한 이미지를 생성하기 위한 Dockerfile 예시입니다:
 
-1. 프로젝트 디렉토리 구조
+### 2-3-1. 프로젝트 디렉토리 구조
 
-css
-코드 복사
+```lua
 project/
 │
 ├── Dockerfile
 └── html/
     └── index.html
+```
 
+<br>
 
-1. index.html 파일 내용
-html
-코드 복사
+### 2-3-2. index.html 파일 내용
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -280,11 +406,11 @@ html
     <h1>Success! The Nginx server is working!</h1>
 </body>
 </html>
+```
 
+### 2-3-3. Dockerfile 작성
 
-3. Dockerfile 작성
-dockerfile
-코드 복사
+```dockerfile
 # 베이스 이미지로 nginx를 사용
 FROM nginx:latest
 
@@ -299,21 +425,33 @@ EXPOSE 80
 
 # Nginx를 실행하는 기본 명령 설정
 CMD ["nginx", "-g", "daemon off;"]
+```
 
-4. Docker 이미지 빌드
+<br>
+
+### 2-3-4. Docker 이미지 빌드
+
 프로젝트 디렉토리로 이동하여 다음 명령을 실행합니다:
 
-bash
-코드 복사
+```bash
 docker build -t mynginx .
+```
 
-5. Docker 컨테이너 실행
-bash
-코드 복사
+<br>
+
+### 2-3-5. Docker 컨테이너 실행
+
+```bash
 docker run -d -p 80:80 mynginx
-Dockerfile 설명
-FROM nginx:latest: 최신 버전의 Nginx 이미지를 베이스 이미지로 사용합니다.
-ENV NGINX_VERSION 1.19.3: 환경 변수를 설정합니다. 이 예제에서는 Nginx 버전을 설정했습니다.
-COPY html/ /usr/share/nginx/html/: 호스트 시스템의 html 디렉토리 내용을 컨테이너의 /usr/share/nginx/html/ 디렉토리에 복사합니다.
-EXPOSE 80: 컨테이너가 80번 포트를 노출하도록 설정합니다.
-CMD ["nginx", "-g", "daemon off;"]: Nginx를 포그라운드 모드로 실행하도록 설정합니다
+```
+
+<br>
+
+**Dockerfile 설명**
+
+- FROM nginx:latest: 최신 버전의 Nginx 이미지를 베이스 이미지로 사용합니다.
+- ENV NGINX_VERSION 1.19.3: 환경 변수를 설정합니다. 이 예제에서는 Nginx 버전을 설정했습니다.
+- COPY html/ /usr/share/nginx/html/: 호스트 시스템의 html 디렉토리 내용을 컨테이너의 /usr/share/nginx/html/ 디렉토리에 복사합니다.
+- EXPOSE 80: 컨테이너가 80번 포트를 노출하도록 설정합니다.
+- CMD ["nginx", "-g", "daemon off;"]: Nginx를 포그라운드 모드로 실행하도록 설정합니다
+
