@@ -1915,5 +1915,32 @@ pipeline{
 }
 
 
+[root@localhost nodejs]# vi Jenkinsfile
+[root@localhost nodejs]# cat Jenkinsfile
+pipeline{
+    agent any
+    tools {
+      dockerTool 'docker'
+    }
+    stages{
+        stage("checkout"){
+            steps{
+                checkout scm
+            }
+        }
+        stage("push image"){
+            steps{
+                script{
+                   docker.withRegistry('https://myregistry.com','gitlab-checkout'){
+                       myapp = docker.build("mygitlab.com/root/nodejs/myapp:${env.BUILD_ID}")
+                       myapp.push()
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 
 
