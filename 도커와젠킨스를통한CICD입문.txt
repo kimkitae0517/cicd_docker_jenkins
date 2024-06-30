@@ -1859,7 +1859,7 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 2024-06-30 05:00:54.774+0000 [id=52]    INFO    hudson.util.Retrier#start: Performed the action check updates server successfully at the attempt #1
 [root@localhost 03_jenkins]#
 
-
+웹 브라우저의 jenkins 로그인 창에 b5061c0523b64e5e83253e0245be0c4e  임시 비밀번호를 입력
 
 80 : gitlab
 8080: jenkins
@@ -1868,9 +1868,51 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 8443: harbor registry
 
 
+선언적 문법, 실행적 문법(groovy)
+GPL / DSL
+
+
+jenkins01.png~jenkins23.png 설정 후
+
+
+[root@localhost 03_jenkins]# ls /var/lib/docker/volumes/jenkins_home/_data/workspace
+test  test@tmp
 
 
 
+
+
+[root@localhost 03_jenkins]# cd ..
+[root@localhost jenkins]# cd 04_harbor
+[root@localhost 04_harbor]# pwd
+/root/jenkins/04_harbor
+[root@localhost 04_harbor]# ls
+Jenkinsfile  harbor.yml  install_harbor.sh
+[root@localhost 04_harbor]# cp Jenkinsfile ~/nodejs
+[root@localhost 04_harbor]# cat Jenkinsfile
+pipeline{
+    agent any
+    tools {
+      dockerTool 'docker'
+    }
+    stages{
+        stage("checkout"){
+            steps{
+                checkout scm
+            }
+        }
+        stage("push image"){
+            steps{
+                script{
+                   docker.withRegistry('https://myregistry.com:8443','registry-auth'){
+                       myapp = docker.build("myregistry.com:8443/test/hello:${env.BUILD_ID}")
+                       myapp.push()
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 

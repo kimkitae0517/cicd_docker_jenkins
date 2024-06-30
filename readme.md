@@ -1710,8 +1710,6 @@ docker rmi $(docker images -q)
 - docker image rm 명령어는 Docker에서 이미지를 삭제할 때 사용됩니다. 
 - docker rmi과 유사하지만 최신 버전에서는 보통 docker image rm을 사용하는 경향이 있습니다. 
 
-markdown
-코드 복사
 | 옵션                    | 예시 명령                                                      | 설명                                                         |
 |-------------------------|---------------------------------------------------------------|--------------------------------------------------------------|
 | 기본                    | `docker image rm myimage:tag`                                  | `myimage:tag` 태그의 이미지를 삭제합니다.                     |
@@ -1724,57 +1722,847 @@ markdown
 | 특정 사이즈 이상 이미지 삭제 | `docker image rm $(docker image ls --filter "since=2 weeks ago" -q)` | 특정 기간 이후에 빌드된 이미지를 삭제합니다.                 |
 | 빌드 스테이지 이미지 삭제 | `docker image rm $(docker image ls --filter "label=stage=build" -q)` | 특정 빌드 스테이지 레이블을 가진 이미지를 삭제합니다.        |
 | 사용 중인 컨테이너와 함께 삭제 | `docker image rm -f myimage:tag`                               | 이미지가 사용 중인 컨테이너를 강제로 중지하고 삭제합니다.     |
-예시 명령어와 설명
-기본
-sh
-코드 복사
+
+
+**기본**
+
+```sh
 docker image rm myimage:tag
-myimage:tag 태그의 이미지를 삭제합니다.
-여러 태그
-sh
-코드 복사
+```
+
+- myimage:tag 태그의 이미지를 삭제합니다.
+
+<br>
+
+**여러 태그**
+
+```sh
 docker image rm myimage:tag1 myimage:tag2
-myimage:tag1과 myimage:tag2를 동시에 삭제합니다.
-이미지 ID로 삭제
-sh
-코드 복사
+```
+
+- myimage:tag1과 myimage:tag2를 동시에 삭제합니다.
+
+
+<br>
+
+**이미지 ID로 삭제**
+
+```sh
 docker image rm 0123456789ab
-이미지 ID 0123456789ab를 사용하여 이미지를 삭제합니다.
-없는 이미지 무시 (강제 삭제)
-sh
-코드 복사
+```
+
+- 이미지 ID 0123456789ab를 사용하여 이미지를 삭제합니다.
+
+<br>
+
+**없는 이미지 무시 (강제 삭제)**
+
+```sh
 docker image rm -f myimage:tag
-이미지가 사용 중이거나 태그가 없어도 강제로 삭제합니다.
-태그 패턴으로 삭제
-sh
-코드 복사
+```
+
+- 이미지가 사용 중이거나 태그가 없어도 강제로 삭제합니다.
+
+<br>
+
+**태그 패턴으로 삭제**
+
+```sh
 docker image rm $(docker image ls -q 'myimage:*')
-myimage라는 이름을 가진 모든 태그를 가진 이미지를 삭제합니다.
-dangling 이미지 삭제
-sh
-코드 복사
+```
+
+- myimage라는 이름을 가진 모든 태그를 가진 이미지를 삭제합니다.
+
+<br>
+
+**dangling 이미지 삭제**
+
+```sh
 docker image rm $(docker image ls -f dangling=true -q)
-dangling 이미지(사용하지 않는 이미지)를 삭제합니다.
-모든 이미지 삭제
-sh
-코드 복사
+```
+
+- dangling 이미지(사용하지 않는 이미지)를 삭제합니다.
+
+<br>
+
+**모든 이미지 삭제**
+
+```sh
 docker image rm $(docker image ls -q)
-시스템에 있는 모든 이미지를 일괄 삭제합니다.
-특정 사이즈 이상 이미지 삭제
-sh
-코드 복사
+```
+
+- 시스템에 있는 모든 이미지를 일괄 삭제합니다.
+
+<br>
+
+**특정 사이즈 이상 이미지 삭제**
+
+```sh
 docker image rm $(docker image ls --filter "since=2 weeks ago" -q)
-특정 기간 이후에 빌드된 이미지를 삭제합니다.
-빌드 스테이지 이미지 삭제
-sh
-코드 복사
+```
+
+- 특정 기간 이후에 빌드된 이미지를 삭제합니다.
+
+<br>
+
+**빌드 스테이지 이미지 삭제**
+
+```sh
 docker image rm $(docker image ls --filter "label=stage=build" -q)
-특정 빌드 스테이지 레이블을 가진 이미지를 삭제합니다.
-사용 중인 컨테이너와 함께 삭제 (강제 삭제)
-sh
-코드 복사
+```
+
+- 특정 빌드 스테이지 레이블을 가진 이미지를 삭제합니다.
+
+<br>
+
+**사용 중인 컨테이너와 함께 삭제 (강제 삭제)**
+
+```sh
 docker image rm -f myimage:tag
-이미지가 사용 중인 컨테이너를 강제로 중지하고 삭제합니다.
+```
+
+- 이미지가 사용 중인 컨테이너를 강제로 중지하고 삭제합니다.
+
+<br><br>
+
+### 2-3-2. docker volume 실습
+
+- docker volume 명령어는 Docker에서 볼륨을 관리하는 데 사용됩니다. 
+- 볼륨은 Docker 컨테이너가 데이터를 지속적으로 저장할 수 있게 해주는 기능입니다.
+- docker volume 명령어는 Docker에서 데이터 관리를 위한 볼륨을 생성, 관리, 삭제하는 데 사용됩니다.
+
+
+| 명령어                   | 옵션 및 예시 명령                                     | 설명                                                                  |
+|-------------------------|------------------------------------------------------|-----------------------------------------------------------------------|
+| `docker volume create`  | `docker volume create myvolume`                      | `myvolume`이라는 이름의 새로운 볼륨을 생성합니다.                      |
+| `docker volume inspect` | `docker volume inspect myvolume`                     | `myvolume` 볼륨의 상세 정보를 출력합니다.                              |
+|                         | `docker volume inspect --format "{{.Name}}" myvolume` | `myvolume` 볼륨의 이름만 출력합니다.                                   |
+| `docker volume ls`      | `docker volume ls`                                   | 시스템에 있는 모든 볼륨을 목록으로 출력합니다.                          |
+|                         | `docker volume ls -f dangling=true`                  | 사용되지 않는(dangling) 볼륨만 출력합니다.                              |
+|                         | `docker volume ls -q`                                | 볼륨 이름만 간단히 출력합니다.                                         |
+| `docker volume prune`   | `docker volume prune`                                | 사용되지 않는 모든 볼륨을 삭제합니다.                                   |
+|                         | `docker volume prune -f`                             | 확인 메시지 없이 강제로 사용되지 않는 모든 볼륨을 삭제합니다.             |
+| `docker volume rm`      | `docker volume rm myvolume`                          | `myvolume`이라는 이름의 볼륨을 삭제합니다.                              |
+|                         | `docker volume rm $(docker volume ls -q)`            | 시스템에 있는 모든 볼륨을 일괄 삭제합니다.                               |
+|                         | `docker volume rm -f myvolume`                       | 컨테이너에서 사용 중이어도 `myvolume` 볼륨을 강제로 삭제합니다.           |
+| `docker volume help`    | `docker volume --help`                               | `docker volume` 명령어의 사용법을 출력합니다.                           |
+
+<br>
+
+#### 2-3-2-1. 볼륨 생성
+
+```sh
+docker volume create myvolume
+```
+
+- myvolume이라는 이름의 새로운 볼륨을 생성합니다.
+
+<br>
+
+#### 2-3-2-2. 볼륨 상세 정보
+
+```sh
+docker volume inspect myvolume
+```
+
+- myvolume 볼륨의 상세 정보를 출력합니다.
+
+<br>
+
+```sh
+docker volume inspect --format "{{.Name}}" myvolume
+```
+
+- myvolume 볼륨의 이름만 출력합니다.
+
+<br>
+
+#### 2-3-2-3. 모든 볼륨 목록
+
+```sh
+docker volume ls
+```
+
+- 시스템에 있는 모든 볼륨을 목록으로 출력합니다.
+
+```sh
+docker volume ls -f dangling=true
+```
+
+- 사용되지 않는(dangling) 볼륨만 출력합니다.
+
+```sh
+docker volume ls -q
+```
+
+- 볼륨 이름만 간단히 출력합니다.
+
+<br>
+
+#### 2-3-2-4. 사용되지 않는 모든 볼륨 삭제
+
+```sh
+docker volume prune
+```
+
+- 사용되지 않는 모든 볼륨을 삭제합니다.
+
+```sh
+docker volume prune -f
+```
+
+- 확인 메시지 없이 강제로 사용되지 않는 모든 볼륨을 삭제합니다.
+
+<br>
+
+#### 2-3-2-5. 특정 볼륨 삭제
+
+```sh
+docker volume rm myvolume
+```
+
+- myvolume이라는 이름의 볼륨을 삭제합니다.
+
+```sh
+docker volume rm $(docker volume ls -q)
+```
+
+- 시스템에 있는 모든 볼륨을 일괄 삭제합니다.
+
+```sh
+docker volume rm -f myvolume
+```
+
+- 컨테이너에서 사용 중이어도 myvolume 볼륨을 강제로 삭제합니다.
+
+<br>
+<br>
+
+#### 2-3-2-6. 도움말
+
+```sh
+docker volume --help
+```
+
+- docker volume 명령어의 사용법을 출력합니다.
+
+<br><br>
+
+### 2-3-3. docker container 실습
+
+docker container 명령어는 Docker에서 컨테이너를 관리하는 데 사용됩니다. 이 명령어는 컨테이너의 생성, 실행, 중지, 삭제, 상태 확인 등 다양한 작업을 수행할 수 있는 옵션을 제공합니다. 모든 옵션과 예시를 정리하겠습니다.
+
+markdown
+코드 복사
+| 명령어                        | 옵션 및 예시 명령                                           | 설명                                                                 |
+|------------------------------|------------------------------------------------------------|----------------------------------------------------------------------|
+| `docker container create`    | `docker container create --name mycontainer nginx`         | `nginx` 이미지를 사용하여 `mycontainer`라는 이름의 컨테이너를 생성합니다. |
+| `docker container exec`      | `docker container exec -it mycontainer /bin/bash`          | 실행 중인 `mycontainer` 컨테이너에 접속하여 `bash` 셸을 실행합니다.     |
+| `docker container inspect`   | `docker container inspect mycontainer`                     | `mycontainer` 컨테이너의 상세 정보를 출력합니다.                      |
+| `docker container ls`        | `docker container ls`                                      | 실행 중인 모든 컨테이너를 목록으로 출력합니다.                        |
+|                              | `docker container ls -a`                                    | 모든 컨테이너(실행 중인 것과 중지된 것 모두)를 목록으로 출력합니다.      |
+|                              | `docker container ls -q`                                    | 컨테이너 ID만 간단히 출력합니다.                                      |
+|                              | `docker container ls --filter "status=exited"`              | 상태가 `exited`인 컨테이너만 출력합니다.                               |
+| `docker container logs`      | `docker container logs mycontainer`                        | `mycontainer` 컨테이너의 로그를 출력합니다.                           |
+|                              | `docker container logs -f mycontainer`                      | `mycontainer` 컨테이너의 로그를 팔로우합니다.                          |
+| `docker container prune`     | `docker container prune`                                   | 사용되지 않는 모든 컨테이너를 삭제합니다.                              |
+|                              | `docker container prune -f`                                 | 확인 메시지 없이 강제로 사용되지 않는 모든 컨테이너를 삭제합니다.        |
+| `docker container rm`        | `docker container rm mycontainer`                          | `mycontainer`라는 이름의 컨테이너를 삭제합니다.                        |
+|                              | `docker container rm -f mycontainer`                        | 실행 중인 `mycontainer` 컨테이너를 강제로 삭제합니다.                   |
+|                              | `docker container rm $(docker container ls -aq)`            | 시스템에 있는 모든 컨테이너를 일괄 삭제합니다.                         |
+| `docker container start`     | `docker container start mycontainer`                       | 중지된 `mycontainer` 컨테이너를 시작합니다.                            |
+| `docker container stop`      | `docker container stop mycontainer`                        | 실행 중인 `mycontainer` 컨테이너를 중지합니다.                         |
+| `docker container restart`   | `docker container restart mycontainer`                     | `mycontainer` 컨테이너를 재시작합니다.                                 |
+| `docker container stats`     | `docker container stats`                                   | 실행 중인 모든 컨테이너의 실시간 리소스 사용량을 출력합니다.            |
+|                              | `docker container stats mycontainer`                        | `mycontainer` 컨테이너의 실시간 리소스 사용량을 출력합니다.             |
+| `docker container top`       | `docker container top mycontainer`                         | `mycontainer` 컨테이너 내에서 실행 중인 프로세스를 출력합니다.           |
+| `docker container run`       | `docker container run --name mycontainer -d nginx`         | `nginx` 이미지를 사용하여 `mycontainer`라는 이름의 컨테이너를 백그라운드에서 실행합니다. |
+|                              | `docker container run --rm -it nginx /bin/bash`             | `nginx` 이미지를 사용하여 종료 시 컨테이너를 자동으로 삭제하고, `bash` 셸을 인터랙티브 모드로 실행합니다. |
+| `docker container kill`      | `docker container kill mycontainer`                        | `mycontainer` 컨테이너를 강제로 종료합니다.                            |
+| `docker container pause`     | `docker container pause mycontainer`                       | `mycontainer` 컨테이너의 모든 프로세스를 일시 중지합니다.               |
+| `docker container unpause`   | `docker container unpause mycontainer`                     | `mycontainer` 컨테이너의 모든 프로세스를 재개합니다.                   |
+| `docker container update`    | `docker container update --memory 512m mycontainer`        | `mycontainer` 컨테이너의 메모리 제한을 512MB로 업데이트합니다.         |
+| `docker container wait`      | `docker container wait mycontainer`                        | `mycontainer` 컨테이너가 중지될 때까지 대기합니다.                     |
+| `docker container rename`    | `docker container rename oldname newname`                  | `oldname` 컨테이너의 이름을 `newname`으로 변경합니다.                  |
+| `docker container cp`        | `docker container cp mycontainer:/path/to/file ./localdir` | `mycontainer` 컨테이너에서 파일을 로컬 디렉토리로 복사합니다.           |
+| `docker container diff`      | `docker container diff mycontainer`                        | `mycontainer` 컨테이너의 파일 시스템 변경 사항을 확인합니다.           |
+
+<br>
+
+#### 2-3-3-1. 컨테이너 생성
+
+```sh
+docker container create --name mycontainer nginx
+```
+
+- nginx 이미지를 사용하여 mycontainer라는 이름의 컨테이너를 생성합니다.
+
+<br>
+
+#### 2-3-3-2. 실행 중인 컨테이너에 접속
+
+```sh
+docker container exec -it mycontainer /bin/bash
+```
+
+- 실행 중인 mycontainer 컨테이너에 접속하여 bash 셸을 실행합니다.
+
+<br>
+
+#### 2-3-3-3. 컨테이너 상세 정보 출력
+
+```sh
+docker container inspect mycontainer
+```
+
+- mycontainer 컨테이너의 상세 정보를 출력합니다.
+
+<br>
+
+#### 2-3-3-4. 실행 중인 모든 컨테이너 목록
+
+```sh
+docker container ls
+```
+
+- 실행 중인 모든 컨테이너를 목록으로 출력합니다.
+
+<br>
+
+#### 2-3-3-5. 모든 컨테이너 목록
+
+```sh
+docker container ls -a
+```
+
+- 모든 컨테이너(실행 중인 것과 중지된 것 모두)를 목록으로 출력합니다.
+
+<br>
+
+#### 2-3-3-6. 간단한 컨테이너 목록
+
+```sh
+docker container ls -q
+```
+
+- 컨테이너 ID만 간단히 출력합니다.
+
+<br>
+
+#### 2-3-3-7. 특정 상태의 컨테이너 목록
+
+```sh
+docker container ls --filter "status=exited"
+```
+
+- 상태가 exited인 컨테이너만 출력합니다.
+
+<br>
+
+#### 2-3-3-8. 컨테이너 로그 출력
+
+```sh
+docker container logs mycontainer
+```
+
+- mycontainer 컨테이너의 로그를 출력합니다.
+
+<br>
+
+#### 2-3-3-9. 로그 팔로우
+
+```sh
+docker container logs -f mycontainer
+```
+
+- mycontainer 컨테이너의 로그를 팔로우합니다.
+
+<br>
+
+#### 2-3-3-10. 사용되지 않는 모든 컨테이너 삭제
+
+```sh
+docker container prune
+```
+
+- 사용되지 않는 모든 컨테이너를 삭제합니다.
+
+<br>
+
+#### 2-3-3-11. 사용되지 않는 모든 컨테이너 강제 삭제
+
+```sh
+docker container prune -f
+```
+
+- 확인 메시지 없이 강제로 사용되지 않는 모든 컨테이너를 삭제합니다.
+
+<br>
+
+#### 2-3-3-12. 특정 컨테이너 삭제
+
+```sh
+docker container rm mycontainer
+```
+
+- mycontainer라는 이름의 컨테이너를 삭제합니다.
+
+<br>
+
+#### 2-3-3-13. 실행 중인 컨테이너 강제 삭제
+
+```sh
+docker container rm -f mycontainer
+```
+
+- 실행 중인 mycontainer 컨테이너를 강제로 삭제합니다.
+
+<br>
+
+#### 2-3-3-14. 모든 컨테이너 일괄 삭제
+
+```sh
+docker container rm $(docker container ls -aq)
+```
+
+- 시스템에 있는 모든 컨테이너를 일괄 삭제합니다.
+
+<br>
+
+#### 2-3-3-15. 중지된 컨테이너 시작
+
+```sh
+docker container start mycontainer
+```
+
+- 중지된 mycontainer 컨테이너를 시작합니다.
+
+<br>
+
+#### 2-3-3-16. 실행 중인 컨테이너 중지
+
+```sh
+docker container stop mycontainer
+```
+
+- 실행 중인 mycontainer 컨테이너를 중지합니다.
+
+<br>
+
+#### 2-3-3-17. 컨테이너 재시작
+
+```sh
+docker container restart mycontainer
+```
+
+- mycontainer 컨테이너를 재시작합니다.
+
+<br>
+
+#### 2-3-3-18. 컨테이너 실시간 리소스 사용량 출력
+
+```sh
+docker container stats
+```
+
+- 실행 중인 모든 컨테이너의 실시간 리소스 사용량을 출력합니다.
+
+<br>
+
+#### 2-3-3-19. 특정 컨테이너 리소스 사용량 출력
+
+```sh
+docker container stats mycontainer
+```
+
+- mycontainer 컨테이너의 실시간 리소스 사용량을 출력합니다.
+
+<br>
+
+#### 2-3-3-20. 컨테이너 내 실행 중인 프로세스 목록
+
+```sh
+docker container top mycontainer
+```
+
+- mycontainer 컨테이너 내에서 실행 중인 프로세스를 출력합니다.
+
+<br>
+
+#### 2-3-3-21. 백그라운드에서 컨테이너 실행
+
+```sh
+docker container run --name mycontainer -d nginx
+```
+
+- nginx 이미지를 사용하여 mycontainer라는 이름의 컨테이너를 백그라운드에서 실행합니다.
+
+<br>
+
+#### 2-3-3-22. 종료 시 자동 삭제 및 셸 실행
+
+```sh
+docker container run --rm -it nginx /bin/bash
+```
+
+- nginx 이미지를 사용하여 종료 시 컨테이너를 자동으로 삭제하고, bash 셸을 인터랙티브 모드로 실행합니다.
+
+<br>
+
+#### 2-3-3-23. 컨테이너 강제 종료
+
+```sh
+docker container kill mycontainer
+```
+
+- mycontainer 컨테이너를 강제로 종료합니다.
+
+<br>
+
+#### 2-3-3-24. 컨테이너 일시 중지
+
+```sh
+docker container pause mycontainer
+```
+
+- mycontainer 컨테이너의 모든 프로세스를 일시 중지합니다.
+
+<br>
+
+#### 2-3-3-25. 컨테이너 재개
+
+```sh
+docker container unpause mycontainer
+```
+
+- mycontainer 컨테이너의 모든 프로세스를 재개합니다.
+
+<br>
+
+#### 2-3-3-26. 컨테이너 리소스 제한 업데이트
+
+```sh
+docker container update --memory 512m mycontainer
+```
+
+- mycontainer 컨테이너의 메모리 제한을 512MB로 업데이트합니다.
+
+<br>
+
+#### 2-3-3-27. 컨테이너 중지 대기
+
+```sh
+docker container wait mycontainer
+```
+
+- mycontainer 컨테이너가 중지될 때까지 대기합니다.
+
+<br>
+
+#### 2-3-3-28. 컨테이너 이름 변경
+
+```sh
+docker container rename oldname newname
+```
+
+- oldname 컨테이너의 이름을 newname으로 변경합니다.
+
+<br>
+
+#### 2-3-3-29. 컨테이너에서 파일 복사
+
+```sh
+docker container cp mycontainer:/path/to/file ./localdir
+```
+
+- mycontainer 컨테이너에서 파일을 로컬 디렉토리로 복사합니다.
+
+<br>
+
+#### 2-3-3-30. 컨테이너 파일 시스템 변경 사항 확인
+
+```sh
+docker container diff mycontainer
+```
+
+- mycontainer 컨테이너의 파일 시스템 변경 사항을 확인합니다.
+
+<br><br>
+
+### 2-3-4. docker network 실습
+
+docker network 명령어는 Docker에서 네트워크를 관리하는 데 사용됩니다. 이 명령어는 네트워크의 생성, 삭제, 검사, 목록 출력 등 다양한 작업을 수행할 수 있는 옵션을 제공합니다. 모든 옵션과 예시를 정리해 보겠습니다.
+
+markdown
+코드 복사
+| 명령어                        | 옵션 및 예시 명령                                           | 설명                                                                   |
+|------------------------------|------------------------------------------------------------|-----------------------------------------------------------------------|
+| `docker network create`      | `docker network create mynetwork`                          | `mynetwork`라는 이름의 새로운 네트워크를 생성합니다.                   |
+|                              | `docker network create --driver bridge mybridge`           | `bridge` 드라이버를 사용하여 `mybridge`라는 이름의 네트워크를 생성합니다.|
+|                              | `docker network create --subnet 192.168.1.0/24 mynetwork`  | 특정 서브넷을 지정하여 `mynetwork` 네트워크를 생성합니다.              |
+| `docker network connect`     | `docker network connect mynetwork mycontainer`             | `mycontainer`를 `mynetwork` 네트워크에 연결합니다.                      |
+|                              | `docker network connect --alias myalias mynetwork mycontainer` | 네트워크에 연결할 때 별칭을 지정합니다.                            |
+| `docker network disconnect`  | `docker network disconnect mynetwork mycontainer`          | `mycontainer`를 `mynetwork` 네트워크에서 분리합니다.                   |
+| `docker network inspect`     | `docker network inspect mynetwork`                         | `mynetwork` 네트워크의 상세 정보를 출력합니다.                          |
+|                              | `docker network inspect --format "{{.Name}}" mynetwork`    | `mynetwork` 네트워크의 이름만 출력합니다.                              |
+| `docker network ls`          | `docker network ls`                                        | 시스템에 있는 모든 네트워크를 목록으로 출력합니다.                      |
+|                              | `docker network ls -q`                                     | 네트워크 ID만 간단히 출력합니다.                                       |
+|                              | `docker network ls -f driver=bridge`                       | 특정 드라이버를 사용하는 네트워크만 출력합니다.                         |
+| `docker network prune`       | `docker network prune`                                     | 사용되지 않는 모든 네트워크를 삭제합니다.                               |
+|                              | `docker network prune -f`                                  | 확인 메시지 없이 강제로 사용되지 않는 모든 네트워크를 삭제합니다.        |
+| `docker network rm`          | `docker network rm mynetwork`                              | `mynetwork`라는 이름의 네트워크를 삭제합니다.                           |
+|                              | `docker network rm $(docker network ls -q)`                | 시스템에 있는 모든 네트워크를 일괄 삭제합니다.                           |
+| `docker network help`        | `docker network --help`                                    | `docker network` 명령어의 사용법을 출력합니다.                           |
+
+<br>
+
+#### 2-3-4-1. 네트워크 생성
+
+```sh
+docker network create mynetwork
+```
+
+- mynetwork라는 이름의 새로운 네트워크를 생성합니다.
+
+```sh
+docker network create --driver bridge mybridge
+```
+
+- bridge 드라이버를 사용하여 mybridge라는 이름의 네트워크를 생성합니다.
+
+
+```sh
+docker network create --subnet 192.168.1.0/24 mynetwork
+```
+
+- 특정 서브넷을 지정하여 mynetwork 네트워크를 생성합니다.
+
+<br>
+
+#### 2-3-4-2. 컨테이너를 네트워크에 연결
+
+```sh
+docker network connect mynetwork mycontainer
+```
+
+- mycontainer를 mynetwork 네트워크에 연결합니다.
+
+```sh
+docker network connect --alias myalias mynetwork mycontainer
+```
+
+- 네트워크에 연결할 때 별칭을 지정합니다.
+
+<br>
+
+#### 2-3-4-3. 컨테이너를 네트워크에서 분리
+
+```sh
+docker network disconnect mynetwork mycontainer
+```
+
+- mycontainer를 mynetwork 네트워크에서 분리합니다.
+
+<br>
+
+#### 2-3-4-4. 네트워크 상세 정보 출력
+
+```sh
+docker network inspect mynetwork
+```
+
+- mynetwork 네트워크의 상세 정보를 출력합니다.
+
+```sh
+docker network inspect --format "{{.Name}}" mynetwork
+```
+
+- mynetwork 네트워크의 이름만 출력합니다.
+
+<br>
+
+#### 2-3-4-5. 모든 네트워크 목록 출력
+
+```sh
+docker network ls
+```
+
+- 시스템에 있는 모든 네트워크를 목록으로 출력합니다.
+
+```sh
+docker network ls -q
+```
+
+- 네트워크 ID만 간단히 출력합니다.
+
+```sh
+docker network ls -f driver=bridge
+```
+
+- 특정 드라이버를 사용하는 네트워크만 출력합니다.
+
+<br>
+
+#### 2-3-4-6. 사용되지 않는 모든 네트워크 삭제
+
+```sh
+docker network prune
+```
+
+- 사용되지 않는 모든 네트워크를 삭제합니다.
+
+```sh
+docker network prune -f
+```
+
+- 확인 메시지 없이 강제로 사용되지 않는 모든 네트워크를 삭제합니다.
+
+<br>
+
+#### 2-3-4-7. 특정 네트워크 삭제
+
+```sh
+docker network rm mynetwork
+```
+
+- mynetwork라는 이름의 네트워크를 삭제합니다.
+
+```sh
+docker network rm $(docker network ls -q)
+```
+
+- 시스템에 있는 모든 네트워크를 일괄 삭제합니다.
+
+<br>
+
+#### 2-3-4-8. 도움말 출력
+
+```sh
+docker network --help
+```
+
+- docker network 명령어의 사용법을 출력합니다.
+
+<br><br>
+
+### 2-3-5. docker system 실습
+
+docker system 명령어는 Docker 시스템의 전체 상태를 관리하고, 시스템 리소스를 청소하는 데 사용됩니다. 모든 옵션과 예시를 정리해 보겠습니다.
+
+markdown
+코드 복사
+| 명령어                        | 옵션 및 예시 명령                                           | 설명                                                               |
+|------------------------------|------------------------------------------------------------|-------------------------------------------------------------------|
+| `docker system df`           | `docker system df`                                         | Docker 시스템의 디스크 사용량을 출력합니다.                        |
+|                              | `docker system df -v`                                      | Docker 시스템의 디스크 사용량을 상세히 출력합니다.                  |
+| `docker system events`       | `docker system events`                                     | Docker 데몬의 실시간 이벤트 스트림을 출력합니다.                   |
+|                              | `docker system events --filter 'event=stop'`               | `stop` 이벤트만 필터링하여 출력합니다.                             |
+|                              | `docker system events --since '2021-01-01'`                | 특정 시간 이후의 이벤트를 출력합니다.                              |
+|                              | `docker system events --until '2021-01-02'`                | 특정 시간까지의 이벤트를 출력합니다.                               |
+| `docker system info`         | `docker system info`                                       | Docker 시스템의 정보를 출력합니다.                                  |
+| `docker system prune`        | `docker system prune`                                      | 사용되지 않는 데이터(컨테이너, 네트워크, 이미지, 볼륨)를 삭제합니다.  |
+|                              | `docker system prune -a`                                   | 사용되지 않는 모든 데이터(중간 이미지 포함)를 삭제합니다.           |
+|                              | `docker system prune -f`                                   | 확인 메시지 없이 강제로 사용되지 않는 데이터를 삭제합니다.           |
+|                              | `docker system prune --volumes`                            | 사용되지 않는 볼륨도 함께 삭제합니다.                              |
+| `docker system help`         | `docker system --help`                                     | `docker system` 명령어의 사용법을 출력합니다.                       |
+
+<br>
+
+#### 2-3-5-1. 디스크 사용량 확인
+
+```sh
+docker system df
+```
+
+- Docker 시스템의 디스크 사용량을 출력합니다.
+
+```sh
+docker system df -v
+```
+
+- Docker 시스템의 디스크 사용량을 상세히 출력합니다.
+
+<br>
+
+#### 2-3-5-2. 실시간 이벤트 스트림 출력
+
+```sh
+docker system events
+```
+
+- Docker 데몬의 실시간 이벤트 스트림을 출력합니다.
+
+```sh
+docker system events --filter 'event=stop'
+```
+
+- stop 이벤트만 필터링하여 출력합니다.
+
+```sh
+docker system events --since '2021-01-01'
+```
+
+- 특정 시간 이후의 이벤트를 출력합니다.
+
+```sh
+docker system events --until '2021-01-02'
+```
+
+- 특정 시간까지의 이벤트를 출력합니다.
+
+<br>
+
+#### 2-3-5-3. 시스템 정보 출력
+
+```sh
+docker system info
+```
+
+- Docker 시스템의 정보를 출력합니다.
+
+<br>
+
+#### 2-3-5-4. 사용되지 않는 데이터 삭제
+
+```sh
+docker system prune
+```
+
+- 사용되지 않는 데이터(컨테이너, 네트워크, 이미지, 볼륨)를 삭제합니다.
+
+```sh
+docker system prune -a
+```
+
+- 사용되지 않는 모든 데이터(중간 이미지 포함)를 삭제합니다.
+
+```sh
+docker system prune -f
+```
+
+- 확인 메시지 없이 강제로 사용되지 않는 데이터를 삭제합니다.
+
+```sh
+docker system prune --volumes
+```
+
+- 사용되지 않는 볼륨도 함께 삭제합니다.
+
+<br>
+
+#### 2-3-5-5. 도움말 출력
+
+```sh
+docker system --help
+```
+
+- docker system 명령어의 사용법을 출력합니다.
+
+<br><br>
+
+### 2-3-6. Rocky Linux에서 docker 실습
+
+
 
 <br><br><br>
 
@@ -1875,3 +2663,30 @@ docker run -d -p 80:80 mynginx
 
 <br><br><br><br>
 
+# 3. GitLab
+
+<br><br><br><br>
+
+# 4. Jenkins
+
+<br><br><br><br>
+
+# 5. Horbor
+
+<br><br><br><br>
+
+# 6. owasp  
+
+<br><br><br><br>
+
+# 7. sonarqube  
+
+<br><br><br><br>
+
+# 8. artifactory  
+
+<br><br><br><br>
+
+# 9. kubernetes 
+
+<br><br><br>
